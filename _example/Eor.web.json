@@ -1,0 +1,281 @@
+{
+  "type": "object",
+  "properties": {
+    "layout": {
+      "type": "void",
+      "x-component": "FormLayout",
+      "x-component-props": {
+        "labelCol": 24,
+        "wrapperCol": 24,
+        "layout": "vertical",
+        "labelWrap": true,
+        "colon": false,
+        "style": {
+          "width": "100%"
+        }
+      },
+      "properties": {
+        "createPersonnel": {
+          "type": "string",
+          "required": true,
+          "title": "{{ t('orderForm.typeOfEmployee') }}",
+          "default": "{{ 1 }}",
+          "x-decorator": "FormItem",
+          "x-component": "Radio.Group",
+          "x-component-props": {
+            "defaultValue": 1
+          },
+          "x-reactions": [
+            "{{useAsyncDataSource(loadOrderEmployeeType)}}",
+            {
+              "target": "personnel",
+              "fulfill": {
+                "state": {
+                  "display": "{{$self.value === 0 ? 'visible' : 'none'}}"
+                }
+              }
+            },
+            {
+              "target": "lastName",
+              "fulfill": {
+                "state": {
+                  "display": "{{$self.value === 0 ? 'none' : 'visible'}}"
+                }
+              }
+            },
+            {
+              "target": "firstName",
+              "fulfill": {
+                "state": {
+                  "display": "{{$self.value === 0 ? 'none' : 'visible'}}"
+                }
+              }
+            }
+          ]
+        },
+        "personnel": {
+          "type": "string",
+          "required": true,
+          "title": "{{ t('orderForm.fullName') }}",
+          "x-decorator": "FormItem",
+          "x-component": "SelectEmployeeBack"
+        },
+        "firstName": {
+          "type": "string",
+          "required": true,
+          "title": "{{ t('orderForm.firstName') }}",
+          "x-decorator": "FormItem",
+          "x-component": "Input",
+          "x-component-props": {
+            "placeholder": "{{ t('placeholder.input') }}",
+            "max-length": 50
+          }
+        },
+        "lastName": {
+          "type": "string",
+          "required": true,
+          "title": "{{ t('orderForm.lastName') }}",
+          "x-decorator": "FormItem",
+          "x-component": "Input",
+          "x-component-props": {
+            "placeholder": "{{ t('placeholder.input') }}",
+            "max-length": 50
+          }
+        },
+        "personnelIdentity": {
+          "type": "object",
+          "required": true,
+          "title": "{{ t('orderForm.employeeIdNo') }}",
+          "description": "{{ $form.editable ? t('orderForm.idTip') : '' }}",
+          "x-decorator": "FormItem",
+          "x-validator": {
+            "validator": "{{(value, rule)=> {if (!value.type || !value.no) return rule.message }}}",
+            "message": "{{ t('msg.formRequired') }}"
+          },
+          "properties": {
+            "layout": {
+              "type": "void",
+              "x-component": "InputGroup",
+              "x-component-props": {
+                "style": {
+                  "width": "100%",
+                  "display": "flex",
+                  "align-items": "center"
+                }
+              },
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "required": false,
+                  "default": "idCard",
+                  "x-decorator": "FormItem",
+                  "x-decorator-props": {
+                    "style": {
+                      "margin-bottom": "0px"
+                    }
+                  },
+                  "x-component": "Select",
+                  "x-component-props": {
+                    "placeholder": "{{ t('placeholder.select') }}"
+                  },
+                  "x-reactions": ["{{useAsyncDataSource(loadOrderIDType)}}"]
+                },
+                "no": {
+                  "type": "string",
+                  "required": false,
+                  "x-decorator": "FormItem",
+                  "x-decorator-props": {
+                    "style": {
+                      "flex": "auto",
+                      "margin-bottom": "0px"
+                    }
+                  },
+                  "x-component": "Input",
+                  "x-component-props": {
+                    "placeholder": "{{ t('placeholder.input') }}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "issueCountryCode": {
+          "type": "string",
+          "required": true,
+          "title": "{{ t('field.issuingCountry') }}",
+          "x-decorator": "FormItem",
+          "x-component": "Select",
+          "x-component-props": {
+            "placeholder": "{{ t('placeholder.select') }}",
+            "allowSearch": true,
+            "virtualListProps": {
+              "threshold": 50
+            }
+          },
+          "x-reactions": ["{{useAsyncDataSource(loadCountry)}}"]
+        },
+        "nationality": {
+          "type": "string",
+          "required": true,
+          "title": "{{ t('orderForm.nationalityOfEmployee') }}",
+          "x-decorator": "FormItem",
+          "x-component": "Select",
+          "x-component-props": {
+            "placeholder": "{{ t('placeholder.select') }}",
+            "allowSearch": true,
+            "virtualListProps": {
+              "threshold": 50
+            }
+          },
+          "x-reactions": ["{{useAsyncDataSource(loadCountry)}}"]
+        },
+        "countryCode": {
+          "type": "string",
+          "required": true,
+          "title": "{{ t('field.workCountry') }}",
+          "x-decorator": "FormItem",
+          "x-component": "Select",
+          "x-component-props": {
+            "placeholder": "{{ t('placeholder.select') }}",
+            "allowSearch": true,
+            "virtualListProps": {
+              "threshold": 50
+            }
+          },
+          "x-reactions": [
+            "{{useAsyncDataSource(loadCountry)}}",
+            {
+              "target": "handleId06Status",
+              "fulfill": {
+                "state": {
+                  "display": "{{ isEUCountry($self.value) ? 'visible' : 'hidden'}}"
+                }
+              }
+            }
+          ]
+        },
+        "workPermitStatus": {
+          "type": "string",
+          "required": true,
+          "title": "{{ t('orderForm.doYouHaveAWorkVisaForYourCountryOfWork') }}",
+          "x-decorator": "FormItem",
+          "x-component": "Select",
+          "x-component-props": {
+            "placeholder": "{{ t('placeholder.select') }}"
+          },
+          "x-display": "{{ $form.query('countryCode').take().value !== $form.query('nationality').take().value && !(isEUCountry($form.query('countryCode').take().value) && isEUCountry($form.query('nationality').take().value)) ? 'visible' : 'hidden'}}",
+          "x-reactions": [
+            "{{useAsyncDataSource(loadOrderWithWorkPermit)}}",
+            {
+              "dependencies": ["handleId06Status"],
+              "target": "serviceItemTypes",
+              "fulfill": {
+                "state": {
+                  "value": "{{ $self.value === 0 && $deps[0] === 1 ? [EOrderItem.EOR_EMPLOYEE_ENTRY, EOrderItem.EOR_WORK_PERMIT, EOrderItem.EOR_ID06] :  $self.value === 0 &&  $deps[0] !== 1 ? [EOrderItem.EOR_EMPLOYEE_ENTRY, EOrderItem.EOR_WORK_PERMIT] : $self.value !== 0 &&  $deps[0] === 1 ? [EOrderItem.EOR_EMPLOYEE_ENTRY, EOrderItem.EOR_ID06] : [EOrderItem.EOR_EMPLOYEE_ENTRY]  }}"
+                }
+              }
+            }
+          ]
+        },
+        "handleId06Status": {
+          "type": "string",
+          "required": true,
+          "default": 0,
+          "description": "{{ $form.editable ? t('orderForm.id06NecessaryTip') : '' }}",
+          "title": "{{ t('orderForm.needId06') }}",
+          "x-decorator": "FormItem",
+          "x-component": "Select",
+          "x-component-props": {
+            "placeholder": "{{ t('placeholder.select') }}"
+          },
+          "x-reactions": [
+            "{{useAsyncDataSource(loadOrderNeedID06)}}",
+            {
+              "dependencies": ["workPermitStatus"],
+              "target": "serviceItemTypes",
+              "fulfill": {
+                "state": {
+                  "value": "{{ $self.value === 1 && $deps[0] === 0 ? [EOrderItem.EOR_EMPLOYEE_ENTRY, EOrderItem.EOR_WORK_PERMIT, EOrderItem.EOR_ID06] :  $self.value !== 1 &&  $deps[0] === 0 ? [EOrderItem.EOR_EMPLOYEE_ENTRY, EOrderItem.EOR_WORK_PERMIT] : $self.value === 1 &&  $deps[0] !== 0 ? [EOrderItem.EOR_EMPLOYEE_ENTRY, EOrderItem.EOR_ID06] : [EOrderItem.EOR_EMPLOYEE_ENTRY]  }}"
+                }
+              }
+            }
+          ]
+        },
+        "serviceItemTypes": {
+          "type": "array",
+          "required": false,
+          "title": "{{ t('orderForm.transaction') }}",
+          "x-decorator": "FormItem",
+          "x-component": "ServiceItemTypes",
+          "default": "{{ [EOrderItem.EOR_EMPLOYEE_ENTRY] }}",
+          "x-display": "{{ $form.query('countryCode').take().value && $form.query('nationality').take().value ? 'visible' : 'none'  }}",
+          "x-reactions": [
+            {
+              "target": "chargingStandard",
+              "fulfill": {
+                "state": {
+                  "value": "{{ $self.value }}"
+                }
+              }
+            }
+          ]
+        },
+        "chargingStandard": {
+          "type": "array",
+          "title": "{{ t('orderForm.chargingStandard') }}",
+          "x-decorator": "FormItem",
+          "x-component": "ChargingStandard",
+          "x-component-props": {
+            "countryCode": "{{ $form.values.countryCode }}",
+            "showServicePrice": true,
+            "showServicePriceDetails": true,
+            "showCostPrice": true,
+            "showCostTip": true,
+            "showDiscount": true
+          },
+          "x-display": "{{ $form.query('countryCode').take().value && $form.query('nationality').take().value ? 'visible' : 'none'  }}"
+        }
+      }
+    }
+  }
+}

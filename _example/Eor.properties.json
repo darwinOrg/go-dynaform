@@ -1,0 +1,71 @@
+{
+  "createPersonnel": {
+    "type": "string",
+    "validates": {
+      "notNull": true,
+      "mustIn": "0|1"
+    }
+  },
+  "personnel": {
+    "type": "string",
+    "validates": {
+    }
+  },
+  "firstName": {
+    "type": "string",
+    "validates": {
+      "maxLength": 50
+    }
+  },
+  "lastName": {
+    "type": "string",
+    "validates": {
+      "maxLength": 50
+    }
+  },
+  "issueCountryCode": {
+    "type": "string",
+    "validates": {
+      "notNull": true,
+      "isCountry": true
+    }
+  },
+  "personnelIdentity": {
+    "type": "identity",
+    "validates": {
+      "notNull": true
+    }
+  },
+  "nationality": {
+    "type": "string",
+    "validates": {
+      "notNull": true,
+      "isCountry": true
+    }
+  },
+  "countryCode": {
+    "type": "string",
+    "validates": {
+      "notNull": true,
+      "isCountry": true
+    }
+  },
+  "workPermitStatus": {
+    "type": "string",
+    "validates": {
+    }
+  },
+  "handleId06Status": {
+    "type": "string",
+    "validates": {
+      "notNull": true,
+      "mustIn": "0|1|2"
+    }
+  },
+  "serviceItemTypes": {
+    "type": "strings",
+    "validates": {
+      "notNull": true
+    }
+  }
+}
